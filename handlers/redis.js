@@ -3,15 +3,15 @@ const utils = require('../utils');
 
 module.exports = {
     props: {
-        db: null,
-        alert: {0:120, 1:120, 2:200, 3:120}
+        db: null
     },
     execute: (discordclient, channel, message) => {
+        const ppmin = {0:120, 1:120, 2:200, 3:120}
         let values = module.exports;
         switch(channel){
             // {\"gm\": 0, \"user\": {\"username\": \"Shinki\", \"userID\": 1901, \"rank\": 126, \"oldaccuracy\": 90.74479675293, \"accuracy\": 90.802619934082, \"oldpp\": 1696, \"pp\": 1699}, \"score\": {\"scoreID\": 91043, \"mods\": 0, \"accuracy\": 0.8563218390804598, \"missess\": 1, \"combo\": 201, \"pp\": 46.480323791503906, \"rank\": 1, \"ranking\": null}, \"beatmap\": {\"beatmapID\": 523397, \"beatmapSetID\": 224175, \"max_combo\": 466, \"song_name\": \"Tomatsu Haruka - courage [Insane]\"}}W
             case "scores:new_score":
-                scoreChannel = discordclient.config.channels.score_posting;
+                scoreChannel = discordclient.config.channels.score_posting; 
                 if (!scoreChannel) {
                     console.log("[Redis] Catched new score, but discord channel for scores is not specifed")
                     return;
@@ -19,7 +19,7 @@ module.exports = {
                 try {
                     let score = JSON.parse(message);
                     let date = new Date(Date.now());
-                    if (score.score.pp<values.alert[score.gm]) return;
+                    if (score.score.pp<ppmin[score.gm]) return;
                     const embed = new RichEmbed()
                         .setAuthor(`${score.user.username}`, `https://a.kurikku.pw/${score.user.userID}`, `https://kurikku.pw/u/${score.user.userID}`)
                         .setTitle(`__New **${score.score.pp.toFixed(0)}pp** score!__ (o\´∀\`o)`)
