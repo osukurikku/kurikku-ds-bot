@@ -4,7 +4,7 @@ const utils = require('../utils');
 module.exports = {
     props: {
         db: null,
-        alert: {0:180, 1:300, 2:410, 3:300}
+        alert: {0:120, 1:120, 2:200, 3:120}
     },
     execute: (discordclient, channel, message) => {
         let values = module.exports;
