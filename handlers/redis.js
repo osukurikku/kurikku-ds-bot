@@ -19,7 +19,7 @@ module.exports = {
                 try {
                     let score = JSON.parse(message);
                     let date = new Date(Date.now());
-                    if (score.score.pp<values.alert[score.gm])
+                    if (score.score.pp<values.alert[score.gm]) return;
                     const embed = new RichEmbed()
                         .setAuthor(`${score.user.username}`, `https://a.kurikku.pw/${score.user.userID}`, `https://kurikku.pw/u/${score.user.userID}`)
                         .setTitle(`__New **${score.score.pp.toFixed(0)}pp** score!__ (o\´∀\`o)`)
