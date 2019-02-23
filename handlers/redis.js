@@ -3,7 +3,8 @@ const utils = require('../utils');
 
 module.exports = {
     props: {
-        db: null
+        db: null,
+        alert: {0:180, 1:300, 2:410, 3:300}
     },
     execute: (discordclient, channel, message) => {
         let values = module.exports;
@@ -18,7 +19,7 @@ module.exports = {
                 try {
                     let score = JSON.parse(message);
                     let date = new Date(Date.now());
-
+                    if (score.score.pp<values.alert[score.gm])
                     const embed = new RichEmbed()
                         .setAuthor(`${score.user.username}`, `https://a.kurikku.pw/${score.user.userID}`, `https://kurikku.pw/u/${score.user.userID}`)
                         .setTitle(`__New **${score.score.pp.toFixed(0)}pp** score!__ (o\´∀\`o)`)

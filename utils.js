@@ -34,7 +34,7 @@ var SCOREV2 = 536870912;
 module.exports = {
     getRank: (rank) => {
         switch (rank) {
-            case "SSH":
+            case "SSH" || "XH":
                 return "<:rankingSSH:548233417473392641>"
             case "SS":
                 return "<:rankingSS:548233417549021209>"
