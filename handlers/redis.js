@@ -18,20 +18,19 @@ module.exports = {
                 }
                 try {
                     let score = JSON.parse(message);
-                    let date = new Date(Date.now());
                     if (score.score.pp<ppmin[score.gm]) return;
                     const embed = new RichEmbed()
                         .setAuthor(`${score.user.username}`, `https://a.kurikku.pw/${score.user.userID}`, `https://kurikku.pw/u/${score.user.userID}`)
-                        .setTitle(`__New **${score.score.pp.toFixed(0)}pp** score!__ (o\´∀\`o)`)
                         .setColor(0xffee58)
                         .setDescription(
-                            `${score.user.username} maked new #${score.score.rank} epic score!
-                            ~ ${utils.getGM(score.gm)} • #${score.user.rank} • ${score.user.pp}pp • ${score.user.accuracy.toFixed(2)}%
-                            ~ ${((score.score.combo===score.beatmap.max_combo) ? `**FC (${score.beatmap.max_combo}x)**` : `*${score.score.combo}/${score.beatmap.max_combo}x*`) } • ${utils.getRank(score.score.ranking)} • ${utils.stringlifyMods(score.score.mods)} • **${(score.score.accuracy*100).toFixed(2)}%**
-                             [${score.beatmap.song_name}](https://kurikku.pw/b/${score.beatmap.beatmapID})`
+`__New **${score.score.pp.toFixed(0)}pp** score!__ (o\´∀\`o)
+${score.user.username} made new #${score.score.rank} epic score!
+~ ${utils.getGM(score.gm)} • #${score.user.rank} • ${score.user.pp}pp • ${score.user.accuracy.toFixed(2)}%
+~ ${((score.score.combo===score.beatmap.max_combo) ? `**FC (${score.beatmap.max_combo}x)**` : `*${score.score.combo}/${score.beatmap.max_combo}x*`) } • ${utils.getRank(score.score.ranking)} • ${utils.stringlifyMods(score.score.mods)} • **${(score.score.accuracy*100).toFixed(2)}%**
+[${score.beatmap.song_name}](https://kurikku.pw/b/${score.beatmap.beatmapID})`
                             )
                         .setThumbnail(`https://assets.ppy.sh/beatmaps/${score.beatmap.beatmapSetID}/covers/list@2x.jpg`)
-                        .setFooter('osu!Kurikku • today at '+date.getHours() + ":" + date.getMinutes())
+                        .setFooter('osu!Kurikku • today at '+utils.getDateTime())
 
                         discordclient.channels.get(scoreChannel).send(embed);
                 } catch(err) {

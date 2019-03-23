@@ -1,4 +1,5 @@
 const { RichEmbed } = require('discord.js');
+const utils = require('../utils');
 
 module.exports = {
     props: {
@@ -26,7 +27,6 @@ module.exports = {
             return next();
         }
         
-        let date = new Date(Date.now());
         let postingChannel = values.dsClient.config.channels.ban_posting;
 
         const embed = new RichEmbed()
@@ -36,7 +36,7 @@ module.exports = {
             .setDescription(
                 `Player **${req.query.banned}** ${(req.query.type === 1) ? "has been restricted" : "has been banned" } by *${req.query.author}*`
                 )
-            .setFooter('osu!Kurikku • today at '+date.getHours() + ":" + date.getMinutes())
+            .setFooter('osu!Kurikku • today at '+utils.getDateTime())
         values.dsClient.channels.get(postingChannel).send(embed);
 
         res.send({

@@ -172,5 +172,18 @@ module.exports = {
     
     formatNumber: (num) =>{
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    },
+
+    getDateTime: () => {
+        var date = new Date();
+    
+        var hour = date.getUTCHours();
+        hour = (hour < 10 ? "0" : "") + hour;
+    
+        var min  = date.getUTCMinutes();
+        min = (min < 10 ? "0" : "") + min;
+    
+        return hour + ":" + min;
     }
+
 }

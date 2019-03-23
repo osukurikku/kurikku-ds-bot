@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { RichEmbed } = require('discord.js');
+const utils = require('../utils');
 
 module.exports = {
     props: {
@@ -42,8 +43,6 @@ module.exports = {
             return next();
         }
 
-        let date = new Date(Date.now());
-
         const embed = new RichEmbed()
             .setAuthor(`${req.query.poster}`, null, `https://kurikku.pw/u/${req.query.poster}`)
             .setTitle(`**New ${(req.query.bid) ? "beatmap" : "mapset" } has been ${req.query.type}d**`)
@@ -53,7 +52,7 @@ module.exports = {
                 [Link to map](https://kurikku.pw/b/${map[0].beatmap_id})`
                 )
             .setThumbnail(`https://assets.ppy.sh/beatmaps/${map[0].beatmapset_id}/covers/list@2x.jpg`)
-            .setFooter('osu!Kurikku • today at '+date.getHours() + ":" + date.getMinutes())
+            .setFooter('osu!Kurikku • today at '+utils.getDateTime())
         values.dsClient.channels.get(postingChannel).send(embed);
 
         res.send({
