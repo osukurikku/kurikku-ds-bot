@@ -33,11 +33,12 @@ module.exports = {
             }
         }
         
-        let user = await axios("https://kotorikku.ru/api/get_user_best?u=" + username + "&limit=3&type=string&m="+mode);
+        let user = await axios("https://kurikku.pw/api/get_user_best?u=" + username + "&limit=3&type=string&m="+mode);
         if (user.data.length<1) {
             msg.channel.send(new RichEmbed().setColor(0xffebee).setDescription("User not found!"));
             return;
         }
+        console.log("HERE?!")
         
         // Just re-maked code of 4Fun
         const resultEmbed = new RichEmbed()
@@ -46,14 +47,14 @@ module.exports = {
             .setDescription("**Last Top-3 scores of that player**");
         
         let rank = 1;
-        user.data.forEach(async (el) => {
-            let r = el;
+        console.log("here")
+        for(let x=0; x<3; x++) {
+            let r = user.data[x];
             let mods = utils.stringlifyMods(r.enabled_mods);
             let acc = 100 * (+r.count300) * 6 + (+r.count100) * 2 + (+r.count50) / (6 * ((+r.count300) + (+r.count100) + (+r.count50) + (+r.countmiss)));
-            let beatmap = await axios("https://osu.ppy.sh/api/get_beatmaps?k=" + client.config.authdata.peppy + "&b=" + r.beatmap_id); 
+            let beatmap = await axios("https://osu.ppy.sh/api/get_beatmaps?k=" + client.config.authdata.peppy + "&b=" + r.beatmap_id)
             
             let bm = beatmap.data[0];
-
             resultEmbed.addField(`#${rank}`, `${bm.artist} - ${bm.title} [${bm.version}]
 ✩: **${Math.round((+bm.difficultyrating) * 100) / 100}**
 Gived: **${Math.round((+r.pp) * 100) / 100}pp**
@@ -62,9 +63,11 @@ Mods: ${mods}
 Combo: ${r.maxcombo}/${bm.max_combo}x
 Accuracy: ${Math.round((+acc) * 100) / 100}
 [Link to map](https://kurikku.pw/b/${r.beatmap_id})`);
-
+                            
             rank+=1;
-        });
+
+        }
+
         
         msg.channel.send(resultEmbed);
     }
