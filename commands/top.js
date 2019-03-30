@@ -38,7 +38,6 @@ module.exports = {
             msg.channel.send(new RichEmbed().setColor(0xffebee).setDescription("User not found!"));
             return;
         }
-        console.log("HERE?!")
         
         // Just re-maked code of 4Fun
         const resultEmbed = new RichEmbed()
@@ -47,7 +46,6 @@ module.exports = {
             .setDescription("**Last Top-3 scores of that player**");
         
         let rank = 1;
-        console.log("here")
         for(let x=0; x<3; x++) {
             let r = user.data[x];
             let mods = utils.stringlifyMods(r.enabled_mods);
@@ -65,9 +63,7 @@ Accuracy: ${Math.round((+acc) * 100) / 100}
 [Link to map](https://kurikku.pw/b/${r.beatmap_id})`);
                             
             rank+=1;
-
         }
-
         
         msg.channel.send(resultEmbed);
     }
