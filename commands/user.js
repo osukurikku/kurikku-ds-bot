@@ -14,7 +14,7 @@ module.exports = {
         let userDB = client.db.get("users").find({ id: msg.author.id }).value();
         if (!userDB) {
             if (args.length<1) {
-                msg.channel.send("Your account is not setted. If you want watch some user write `!recent <nickname>`");
+                msg.channel.send("Your account is not setted. To setup use `!sn <nickname>`");
                 return;
             }
             username = args[0];

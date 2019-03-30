@@ -14,7 +14,7 @@ module.exports = {
         let userDB = client.db.get("users").find({ id: msg.author.id }).value();
         if (!userDB) {
             if (args.length<1) {
-                msg.channel.send("Your account is not setted. If you want watch some user write `!recent <nickname>`");
+                msg.channel.send("Your account is not setted. To setup use `!sn <nickname>`");
                 return;
             }
             username = args[0];
@@ -39,58 +39,32 @@ module.exports = {
             return;
         }
         
-        // Just re-maked code of 4Fun, that code maybe can be cleaner
-        // TODO: make this code more clear!
-
-        let r1 = user.data[0];
-        let r2 = user.data[1];
-        let r3 = user.data[2];
-
-        let mods = utils.stringlifyMods(r1.enabled_mods);
-        let mods2 = utils.stringlifyMods(r2.enabled_mods);
-        let mods3 = utils.stringlifyMods(r3.enabled_mods);
-        let acc = 100 * (+r1.count300) * 6 + (+r1.count100) * 2 + (+r1.count50) / (6 * ((+r1.count300) + (+r1.count100) + (+r1.count50) + (+r1.countmiss)));
-        let acc2 = 100 * (+r2.count300) * 6 + (+r2.count100) * 2 + (+r2.count50) / (6 * ((+r2.count300) + (+r2.count100) + (+r2.count50) + (+r2.countmiss)));
-        let acc3 = 100 * (((+r3.count300)) * 6 + ((+r3.count100)) * 2 + (+r3.count50)) / (6 * ((+r3.count300) + (+r3.count100) + (+r3.count50) + (+r3.countmiss)));
-        
-        const beatmap1 = await axios("https://osu.ppy.sh/api/get_beatmaps?k=" + client.config.authdata.peppy + "&b=" + r1.beatmap_id); 
-        const beatmap2 = await axios("https://osu.ppy.sh/api/get_beatmaps?k=" + client.config.authdata.peppy + "&b=" + r1.beatmap_id); 
-        const beatmap3 = await axios("https://osu.ppy.sh/api/get_beatmaps?k=" + client.config.authdata.peppy + "&b=" + r1.beatmap_id); 
-
-        let bm1 = beatmap1.data[0];
-        let bm2 = beatmap2.data[0];
-        let bm3 = beatmap3.data[0];
-
+        // Just re-maked code of 4Fun
         const resultEmbed = new RichEmbed()
             .setColor(0x4fc3f7)
             .setAuthor("Top-3 score "+username)
-            .setDescription("**Last Top-3 scores of that player**")
-            .addField("#1", `${bm1.artist} - ${bm1.title} [${bm1.version}]
-            ✩: **${Math.round((+bm1.difficultyrating) * 100) / 100}**
-            Gived: **${Math.round((+r1.pp) * 100) / 100}pp**
-            Rank: ${utils.getRank(r1.rank)}
-            Mods: ${mods}
-            Combo: ${r1.maxcombo}/${bm1.max_combo}x
-            Accuracy: ${Math.round((+acc) * 100) / 100}
-            [Link to map](https://kurikku.pw/b/${r1.beatmap_id})`)
+            .setDescription("**Last Top-3 scores of that player**");
+        
+        let rank = 1;
+        user.data.forEach(async (el) => {
+            let r = el;
+            let mods = utils.stringlifyMods(r.enabled_mods);
+            let acc = 100 * (+r.count300) * 6 + (+r.count100) * 2 + (+r.count50) / (6 * ((+r.count300) + (+r.count100) + (+r.count50) + (+r.countmiss)));
+            let beatmap = await axios("https://osu.ppy.sh/api/get_beatmaps?k=" + client.config.authdata.peppy + "&b=" + r.beatmap_id); 
+            
+            let bm = beatmap.data[0];
 
-            .addField("#2", `${bm2.artist} - ${bm2.title} [${bm2.version}]
-            ✩: **${Math.round((+bm2.difficultyrating) * 100) / 100}**
-            Gived: **${Math.round((+r2.pp) * 100) / 100}pp**
-            Rank: ${utils.getRank(r2.rank)}
-            Mods: ${mods2}
-            Combo: ${r2.maxcombo}/${bm2.max_combo}x
-            Accuracy: ${Math.round((+acc2) * 100) / 100}
-            [Link to map](https://kurikku.pw/b/${r2.beatmap_id})`)
+            resultEmbed.addField(`#${rank}`, `${bm.artist} - ${bm.title} [${bm.version}]
+✩: **${Math.round((+bm.difficultyrating) * 100) / 100}**
+Gived: **${Math.round((+r.pp) * 100) / 100}pp**
+Rank: ${utils.getRank(r.rank)}
+Mods: ${mods}
+Combo: ${r.maxcombo}/${bm.max_combo}x
+Accuracy: ${Math.round((+acc) * 100) / 100}
+[Link to map](https://kurikku.pw/b/${r.beatmap_id})`);
 
-            .addField("#3", `${bm3.artist} - ${bm3.title} [${bm3.version}]
-            ✩: **${Math.round((+bm3.difficultyrating) * 100) / 100}**
-            Gived: **${Math.round((+r3.pp) * 100) / 100}pp**
-            Rank: ${utils.getRank(r3.rank)}
-            Mods: ${mods3}
-            Combo: ${r3.maxcombo}/${bm3.max_combo}x
-            Accuracy: ${Math.round((+acc3) * 100) / 100}
-            [Link to map](https://kurikku.pw/b/${r3.beatmap_id})`)
+            rank+=1;
+        });
         
         msg.channel.send(resultEmbed);
     }
