@@ -6,6 +6,12 @@
         "discordToken": "<discord token to auth>",
         "peppy": "<osu_api_token>"
     },
+    "mysql": {
+        "host": "",
+        "login": "",
+        "password": "",
+        "db": "ripple"
+    },
     "redis": {
         "host": "127.0.0.1",
         "port": 6379,
@@ -15,7 +21,11 @@
     "channels": {
         "score_posting": "<channel in who bot should posting new score>",
         "map_posting": "<channel in who bot should posting new ranked maps>",
-        "ban_posting": "<channel in who bot should posting bad users>"
+        "ban_posting": "<channel in who bot should posting bad users>",
+        "donates_posting": "<channel in who bot should posting new donates>"
+    },
+    "donationalerts": {
+        "widget_token": "donation alerts widget token"
     },
     "web": {
         "host": "127.0.0.1",

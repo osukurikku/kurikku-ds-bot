@@ -4,12 +4,13 @@ const bot = require('./config.json');
 const utils = require('./utils.js');
 const shlex = require("shlex");
 const redisHandler = require("./handlers/redis");
-
+const mysql = require("mysql");
 const restify = require('restify');
 const submitMapHandler = require("./handlers/submitMap");
 const submitBanOrRestrictHandler = require("./handlers/submitBanOrRestrict");
+const { initDonations } = require("./handlers/donateHandler")
 
-// LOW-DB
+//============= LOW-DB PART ============== //
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('crystalDb.json');
@@ -18,6 +19,23 @@ const db = low(adapter);
 db.defaults({ users: [] }).write();
 
 redisHandler.props.db = db;
+
+//============= MYSQL-DB PART ============== //
+
+console.log("[MySql] connecting to mysql");
+
+const PoolDB = mysql.createPool({
+    host: bot.mysql.host,
+    user: bot.mysql.login,
+    password: bot.mysql.password,
+    database: bot.mysql.db
+});
+
+bot.SQL = PoolDB
+
+console.log("[MySql] connected");
+
+//============= MYSQL-DB PART END ============== //
 
 //============= RESTIFY PART ============== //
 
@@ -154,6 +172,15 @@ async function messageHandler(message) {
 client.login(bot.authdata.discordToken).catch(console.error);
 
 // =============== DISCORD PART END ============= //
+
+
+//============= Donate Handler PART ============= //
+
+console.log("[Donates] inited")
+initDonations(client, bot);
+
+//============= Donate Handler PART END ============= //
+
 
 // =============== REDIS PART ============= //
 

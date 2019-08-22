@@ -1,3 +1,5 @@
+const sqlstring = require("sqlstring");
+
 var None = 0;
 var NoFail = 1;
 var Easy = 2;
@@ -184,6 +186,29 @@ module.exports = {
         min = (min < 10 ? "0" : "") + min;
     
         return hour + ":" + min;
+    },
+
+    query: async (pool, sql, ...args) => {
+        return new Promise((resolve, reject) => {
+            pool.getConnection((error, connection) => {
+                if (error) {
+                    reject(error);
+                    connection.release();
+                }
+                else {
+                    connection.query(sqlstring.format(sql, args), (error, result) => {
+                        if (error) {
+                            reject(error);
+                            connection.release();
+                        }
+                        else {
+                            resolve(result);
+                            connection.release();
+                        };
+                    });
+                }
+            });
+        });
     }
 
 }
