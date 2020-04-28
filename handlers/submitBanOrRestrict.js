@@ -31,10 +31,10 @@ module.exports = {
 
         const embed = new RichEmbed()
             .setAuthor(`${req.query.author}`, null, `https://kurikku.pw/u/${req.query.author}`)
-            .setTitle(`User *${req.query.banned}* ${(req.query.type === 1) ? "has been restricted" : "has been banned" }`)
+            .setTitle(`User *${req.query.banned}* ${(+req.query.type === 0) ? "has been restricted" : "has been banned" }`)
             .setColor(0xf44336)
             .setDescription(
-                `Player **${req.query.banned}** ${(req.query.type === 1) ? "has been restricted" : "has been banned" } by *${req.query.author}*`
+                `Player **${req.query.banned}** ${(+req.query.type === 0) ? "has been restricted" : "has been banned" } by *${req.query.author}*`
                 )
             .setFooter('osu!Kurikku • today at '+utils.getDateTime())
         values.dsClient.channels.get(postingChannel).send(embed);

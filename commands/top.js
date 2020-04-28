@@ -49,7 +49,32 @@ module.exports = {
         for(let x=0; x<3; x++) {
             let r = user.data[x];
             let mods = utils.stringlifyMods(r.enabled_mods);
-            let acc = 100 * (+r.count300) * 6 + (+r.count100) * 2 + (+r.count50) / (6 * ((+r.count300) + (+r.count100) + (+r.count50) + (+r.countmiss)));
+            let acc, totalPoints, totalHits;
+            switch (+mode) {
+                case 0:
+                    totalPoints = (+r.count50)*50+(+r.count100)*100+(+r.count300)*300;
+                    totalHits = (+r.count300)+(+r.count100)+(+r.count50)+(+r.countmiss);
+                    acc = (totalHits === 0) ? 1 : totalPoints/(totalHits*300);
+                    break;
+                case 1:
+                     totalPoints = (+r.count100*50)+(+r.count300*100);
+                     totalHits = (+r.countmiss)+(+r.count100)+(+r.count300);
+                    acc = totalPoints / (totalHits * 100);
+                    break
+                case 2:
+                    totalHits = (+r.count300)+(+r.count100)+(+r.count50);
+                    totalPoints = totalHits+(+r.countmiss)+(+r.countkatu);
+                    acc = (totalPoints === 0) ? 1 : totalHits / totalPoints;
+                    break;
+                case 3:
+                    totalPoints = (+r.count50)*50+(+r.count100)*100+(+r.countkatu)*200+(+r.count300)*300+(+r.countgeki)*300;
+                    totalHits = (+r.countmiss)+(+r.count50)+(+r.count100)+(+r.count300)+(+r.countgeki)+(+r.countkatu);
+                    acc = totalPoints / (totalHits * 300);
+                    break;
+                default:
+                    acc = 0;
+                    break;
+            }
             let beatmap = await axios("https://osu.ppy.sh/api/get_beatmaps?k=" + client.config.authdata.peppy + "&b=" + r.beatmap_id)
             
             let bm = beatmap.data[0];
@@ -59,7 +84,7 @@ Gived: **${Math.round((+r.pp) * 100) / 100}pp**
 Rank: ${utils.getRank(r.rank)}
 Mods: ${mods}
 Combo: ${r.maxcombo}/${bm.max_combo}x
-Accuracy: ${Math.round((+acc) * 100) / 100}
+Accuracy: ${(acc*100).toFixed(2)}%
 [Link to map](https://kurikku.pw/b/${r.beatmap_id})`);
                             
             rank+=1;
