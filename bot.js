@@ -199,3 +199,26 @@ clientRedis.on("message", (chan, msg) => {
 clientRedis.subscribe("scores:new_score");
 
 // ============ REDIS PART END ============= //
+
+// ============ My pure js and things ============= //
+
+// call private module if exists
+try {
+    const privateThings = require("./private/index");
+    privateThings.init()
+} catch (e) {
+    console.log("[Private] Hey! It seems that you are using the public version from the github, well, use it further (✿◠‿◠) 〜")
+}
+
+console.logCopy = console.log.bind(console);
+
+console.log = function (data) {
+    const d = new Date();
+    const currentDate = "[" + ("0" + d.getHours()).slice(-2) + ":" +
+        ("0" + d.getMinutes()).slice(-2) + ":" +
+        ("0" + d.getSeconds()).slice(-2) + "]";
+
+    this.logCopy(currentDate, data);
+};
+
+// ============= My part is end ============= //
