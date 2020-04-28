@@ -1,0 +1,3 @@
+[submodule "private"]
+	path = private
+	url = https://git.kotworks.wtf/osukurikku/crystal-private.git
