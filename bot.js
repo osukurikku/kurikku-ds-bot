@@ -205,7 +205,7 @@ clientRedis.subscribe("scores:new_score");
 // call private module if exists
 try {
     const privateThings = require("./private/index");
-    privateThings.init(bot.SQL);
+    privateThings.init(client);
 } catch (e) {
     console.log("[Private] Hey! It seems that you are using the public version from the github, well, use it further (✿◠‿◠) 〜")
 }
