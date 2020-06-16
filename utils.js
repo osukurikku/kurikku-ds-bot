@@ -38,7 +38,7 @@ module.exports = {
         switch (rank) {
             case "SSH" || "XH":
                 return "<:rankingSSH:548233417473392641>"
-            case "SS":
+            case "SS" || "X":
                 return "<:rankingSS:548233417549021209>"
             case "SH":
                 return "<:rankingSH:548233417351757830>"
