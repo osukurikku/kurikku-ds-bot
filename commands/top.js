@@ -46,9 +46,9 @@ module.exports = {
             .setDescription("**Last Top-3 scores of that player**");
         
         let rank = 1;
-        for(let x=0; x<3; x++) {
-            let r = user.data[x];
-            let mods = utils.stringlifyMods(r.enabled_mods);
+        for(let r of user.data) {
+            //let r = user.data[x];
+            let mods = utils.stringlifyMods("enabled_mods" in r ? r.enabled_mods : 0);
             let acc, totalPoints, totalHits;
             switch (+mode) {
                 case 0:
