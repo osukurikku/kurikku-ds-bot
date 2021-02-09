@@ -30,6 +30,7 @@ module.exports = {
                 .setColor(0x66bb6a)
             let msg = '';
             for (let i = 0; i < cmd.length; i++) {
+                if ('hidden' in cmd[i] && cmd[i]['hidden']) continue;
                 resultEmbed.addField(cmd[i].name, `Enabled: ${cmd[i].enabled ? "**yes**" : "**No**"}
                 Aliases: **${cmd[i].aliases.length ? (cmd[i].aliases.join(" or ")) : 'None'}**
                 Usage: **${cmd[i].usage}**

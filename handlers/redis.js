@@ -1,6 +1,13 @@
 const { RichEmbed } = require('discord.js');
 const utils = require('../utils');
 
+try {
+    const oopsie = require("../private/anticheat/redis_handler");
+} catch (e) {
+    const oopsie = null;
+    console.log("sorry you can't use this <3");
+}
+
 module.exports = {
     props: {
         db: null
@@ -37,6 +44,10 @@ ${score.user.username} made new #${score.score.rank} epic score!
                     console.error(err);
                     console.log("[Redis] Error while score parsing!")
                     break;
+                }
+
+                if (oopsie !== null) {
+                    oopsie.call(discordclient, channel, message);
                 }
                 break;
         }
