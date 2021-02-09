@@ -197,6 +197,7 @@ clientRedis.on("message", (chan, msg) => {
 })
 
 clientRedis.subscribe("scores:new_score");
+clientRedis.subscribe("maps:new_request");
 
 // ============ REDIS PART END ============= //
 

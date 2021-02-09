@@ -1,6 +1,7 @@
 const axios = require("axios");
 const { RichEmbed } = require('discord.js');
 const utils = require('../utils');
+const secretUtils = require("../private/utils");
 
 module.exports = {
     name: 'recent',
@@ -32,31 +33,59 @@ module.exports = {
                 mode = userDB.mode;
             }
         }
-        
-        let recent = await axios("https://kurikku.pw/api/get_user_recent?u=" + username + "&limit=1&type=string&m="+mode);
-        if (recent.data.length<1) {
-            msg.channel.send(new RichEmbed().setColor(0xffebee).setDescription("User not found!"));
-            return;
-        }
-        recent = recent.data[0];
+        try {
+            let recent = await axios.get("https://kurikku.pw/api/v1/users/scores/recent", {
+                params: {
+                    name: username,
+                    mode: mode
+                }
+            })
 
-        let beatmap = await axios("https://osu.ppy.sh/api/get_beatmaps?k=" + client.config.authdata.peppy + "&b=" + recent.beatmap_id)
-        if (beatmap.data.length<1) {
-            msg.channel.send(new RichEmbed().setColor(0xffebee).setDescription("Beatmap not found!"));
-            return;
-        }
-        beatmap = beatmap.data[0]
-        const resultEmbed = new RichEmbed()
-            .setColor(0xec407a)
-            .setAuthor(username)
-            .setDescription(`[⯈ ${beatmap.artist} - ${beatmap.title} [${beatmap.version}] by ${beatmap.creator} +${utils.stringlifyMods(recent.enabled_mods)}](https://kurikku.pw/b/${recent.beatmap_id})`)
-            .addField('Score', utils.formatNumber(recent.score), true)
-            .addField('Combo', ((recent.maxcombo===beatmap.max_combo) ? `**FC (${beatmap.max_combo}x)**` : `*${recent.maxcombo}/${beatmap.max_combo}x*`), true)
-            .addField('PP', recent.pp, true)
-            .addField('Rank', utils.getRank(recent.rank), true)
-            .setFooter('osu!Kurikku')
-            .setThumbnail(`https://assets.ppy.sh/beatmaps/${beatmap.beatmapset_id}/covers/list@2x.jpg`);
+            let userTop = await axios.get("https://kurikku.pw/api/v1/users/scores/best", {
+                params: {
+                    name: username,
+                    mode: mode,
+                    limit: 100
+                }
+            })
+            
+            if ((!('scores' in recent.data) || recent.data['scores'].length < 1) || (!('scores' in userTop.data) || userTop.data['scores'].length < 1)) throw Exception("");
+            recent = recent.data['scores'][0];
 
-        msg.channel.send(resultEmbed);
+            let topBeatIds = []
+            for (let x of userTop.data["scores"]) {
+                topBeatIds.push(x.beatmap.beatmap_id);
+            } 
+
+            let resultEmbed = new RichEmbed()
+                .setColor(0xec407a)
+                .setAuthor(username)
+                .setDescription(`[⯈ ${recent.beatmap.song_name}] +${utils.stringlifyMods(recent.mods)}](https://kurikku.pw/b/${recent.beatmap.beatmap_id})`)
+                .addField('⯈ Score', utils.formatNumber(recent.score), true)
+                .addField('⯈ Combo', ((recent.max_combo===recent.beatmap.max_combo) ? `**FC (${recent.beatmap.max_combo}x)**` : `*${recent.max_combo}/${recent.beatmap.max_combo}x*`), true)
+                .setThumbnail(`https://assets.ppy.sh/beatmaps/${recent.beatmap.beatmapset_id}/covers/list@2x.jpg`);
+
+            if (+mode === 0) {
+                let mapStat = await secretUtils.getCoolMapStat(recent.beatmap.beatmap_id,
+                    recent.mods,
+                    recent.max_combo,
+                    recent.accuracy,
+                    recent.count_miss) // calling for secret stuff(only for std now)
+
+                resultEmbed.setDescription(`${resultEmbed.description} [★ ${mapStat.data.stats.star.pure}]\n(${Math.round(mapStat.data.stats.bpm.api)} BPM)`)
+                            .addField('⯈ PP', `${recent.pp} (100%:${mapStat.data.pp.acc["100"]}, 99%:${mapStat.data.pp.acc["99"]}, 95%:${mapStat.data.pp.acc["95"]}, 90%:${mapStat.data.pp.acc["90"]}, 80%:${mapStat.data.pp.acc["80"]})`, false)
+
+            } else {
+                resultEmbed.addField('⯈ PP', recent.pp, true)
+            }
+            //msg.channel.send("<:hit300:764220170603331595>")
+            resultEmbed.addField("⯈ Hits", `[<:hit300:764220055818338324>${recent.count_300}/<:hit100:764220096594968576>${recent.count_100}/<:hit50:764220115839090688>${recent.count_50}/<:hit0:764220129273708564>${recent.count_miss}]`, true)
+                        .addField('⯈ Rank', utils.getRank(recent.rank), false)
+                        .setFooter(`osu!Kurikku${(topBeatIds.indexOf(recent.beatmap.beatmap_id) != -1) ? ` | This score is #${topBeatIds.indexOf(recent.beatmap.beatmap_id)+1} in user top-100` : ""}`)
+            
+            msg.channel.send(resultEmbed);
+        } catch (e) {
+           msg.channel.send("Not found!")
+        }        
     }
 }

@@ -1,5 +1,6 @@
 const { RichEmbed } = require('discord.js');
 const utils = require('../utils');
+const axios = require('axios');
 
 try {
     const oopsie = require("../private/anticheat/redis_handler");
@@ -12,7 +13,7 @@ module.exports = {
     props: {
         db: null
     },
-    execute: (discordclient, channel, message) => {
+    execute: async (discordclient, channel, message) => {
         const ppmin = {0:120, 1:120, 2:200, 3:120}
         let values = module.exports;
         switch(channel){
@@ -48,6 +49,60 @@ ${score.user.username} made new #${score.score.rank} epic score!
 
                 if (oopsie !== null) {
                     oopsie.call(discordclient, channel, message);
+                }
+                break;
+            case "maps:new_request":
+                batChannel = discordclient.config.channels.bat_channel;
+                if (!batChannel) {
+                    console.log("[Redis] Catched new map request, but discord channel for staff is not specified(")
+                    return;
+                }
+                try {
+                    let mapR = JSON.parse(message);                    
+                    let userInfo = await axios.get("https://kurikku.pw/api/v1/users", {
+                        params: {
+                            id: mapR.Uid
+                        }
+                    })
+                    if (userInfo.data.code != 200) {
+                        throw Error("User corrupted")
+                    }
+
+                    let map = null;
+                    switch (mapR.Type) {
+                        case "b":
+                            let mapResponse = await axios("https://osu.ppy.sh/api/get_beatmaps?k="+discordclient.config.authdata.peppy+"&b="+mapR.Bid)
+                            map = Array.isArray(mapResponse.data) && mapResponse.data.length > 0 && mapResponse.data[0]
+                            break;
+                        case "s":
+                            let mapResponse1 = await axios("https://osu.ppy.sh/api/get_beatmaps?k="+discordclient.config.authdata.peppy+"&s="+mapR.Bid)
+                            map = Array.isArray(mapResponse1.data) && mapResponse1.data.length > 0 && mapResponse1.data[0]
+                            break;
+                        default:
+                            throw Error("CAN'T IDENTIFY TYPE")
+                    }
+
+                    if (!map) {
+                        throw Error("CAN'T IDENTIFY MAP")
+                    }
+
+                    const embed = new RichEmbed()
+                        .setAuthor(`${userInfo.data.username}`, null, `https://kurikku.pw/u/${mapR.Uid}`)
+                        .setTitle(`**New ${(mapR.Type === "b") ? "beatmap" : "mapset" } has been requested**`)
+                        .setColor(0xe26a6a)
+                        .setDescription(
+                            `**${userInfo.data.username}**(*${mapR.Uid}*) has map requested called **${map.artist} - ${map.title}${(map.length > 1) ? "" : ` [${map.version}]`}** created by **${map.creator}**
+                            [Link to map](https://kurikku.pw/b/${map.beatmap_id})
+                            [Link moderate](https://oadmin.kurikku.pw/index.php?p=124&bsid=${map.beatmapset_id})`
+                            )
+                        .setThumbnail(`https://assets.ppy.sh/beatmaps/${map.beatmapset_id}/covers/list@2x.jpg`)
+                        .setFooter('osu!Kurikku • today at '+utils.getDateTime())
+                    
+                        discordclient.channels.get(batChannel).send("<@&514167453509615660> check this!", { embed });
+                } catch(e) {
+                    console.error(e);
+                    console.log("[Redis] Error while map request parsing!")
+                    break;
                 }
                 break;
         }

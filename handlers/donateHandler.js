@@ -1,7 +1,11 @@
 const io = require('socket.io-client');
 const Discord = require("discord.js");
 const utils = require("../utils");
-let socket = io('wss://socket.donationalerts.ru:443');
+let socket = io.connect('wss://socket.donationalerts.ru:443',  {
+    'reconnection': true,
+    'reconnectionDelay': 500,
+    'reconnectionAttempts': 10
+});
 
 const initDonations = (client, bot) => {
     socket.emit('add-user', {token: bot.donationalerts.widget_token, type: "alert_widget"});
