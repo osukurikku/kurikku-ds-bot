@@ -16,7 +16,7 @@
   "author": "KotRik",
   "license": "AGPL v3.0",
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "discord.js": "^11.6.4",
     "lowdb": "^1.0.0",
     "lzma": "^2.3.2",
