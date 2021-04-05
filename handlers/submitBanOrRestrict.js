@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const utils = require('../utils');
 
 const messages = {
@@ -53,7 +53,7 @@ module.exports = {
         
         let postingChannel = values.dsClient.config.channels.ban_posting;
 
-        const embed = new RichEmbed()
+        const embed = new MessageEmbed()
             .setAuthor(`${req.query.author}`, null, `https://kurikku.pw/u/${req.query.author}`)
             .setTitle(`User *${req.query.banned}* ${message}`)
             .setColor(color)

@@ -16,7 +16,7 @@ const initDonations = (client, bot) => {
             return;
         }
         else {
-            var embed = new Discord.RichEmbed()
+            var embed = new Discord.MessageEmbed()
                 .setTitle(`New donate message!`)
                 .setAuthor(donat.username)
                 .setColor("aa1a4d")

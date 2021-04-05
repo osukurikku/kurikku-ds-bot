@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const utils = require('../utils');
 const axios = require('axios');
 
@@ -30,7 +30,7 @@ module.exports = {
                 try {
                     let score = JSON.parse(message);
                     if (score.score.pp<ppmin[score.gm]) return;
-                    const embed = new RichEmbed()
+                    const embed = new MessageEmbed()
                         .setAuthor(`${score.user.username}`, `https://a.kurikku.pw/${score.user.userID}`, `https://kurikku.pw/u/${score.user.userID}`)
                         .setColor(0xffee58)
                         .setDescription(
@@ -85,7 +85,7 @@ ${score.user.username} made new #${score.score.rank} epic score!
                         throw Error("CAN'T IDENTIFY MAP")
                     }
 
-                    const embed = new RichEmbed()
+                    const embed = new MessageEmbed()
                         .setAuthor(`${userInfo.data.username}`, null, `https://kurikku.pw/u/${mapR.Uid}`)
                         .setTitle(`**New ${(mapR.Type === "b") ? "beatmap" : "mapset" } has been requested**`)
                         .setColor(0xe26a6a)

@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const utils = require('../utils');
 
 module.exports = {
@@ -35,12 +35,12 @@ module.exports = {
         
         let user = await axios("https://kurikku.pw/api/get_user_best?u=" + username + "&limit=3&type=string&m="+mode);
         if (user.data.length<1) {
-            msg.channel.send(new RichEmbed().setColor(0xffebee).setDescription("User not found!"));
+            msg.channel.send(new MessageEmbed().setColor(0xffebee).setDescription("User not found!"));
             return;
         }
         
         // Just re-maked code of 4Fun
-        const resultEmbed = new RichEmbed()
+        const resultEmbed = new MessageEmbed()
             .setColor(0x4fc3f7)
             .setAuthor("Top-3 score "+username)
             .setDescription("**Last Top-3 scores of that player**");

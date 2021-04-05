@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'help',
@@ -14,7 +14,7 @@ module.exports = {
                 message.channel.send("Command not found!")
                 return;
             }
-            const resultEmbed = new RichEmbed()
+            const resultEmbed = new MessageEmbed()
                 .setTitle(cmd.name)
                 .setColor(0x66bb6a)
                 .setDescription(`__Enabled:__ ${(cmd.enabled ? '**yes**' : '**NO**')}
@@ -25,7 +25,7 @@ module.exports = {
             message.channel.send(resultEmbed).catch(console.error);
         } else {
             let cmd = client.commands.array();
-            const resultEmbed = new RichEmbed()
+            const resultEmbed = new MessageEmbed()
                 .setTitle("**Helping:**")
                 .setColor(0x66bb6a)
             let msg = '';

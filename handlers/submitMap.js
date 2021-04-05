@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const utils = require('../utils');
 
 module.exports = {
@@ -43,7 +43,7 @@ module.exports = {
             return next();
         }
 
-        const embed = new RichEmbed()
+        const embed = new MessageEmbed()
             .setAuthor(`${req.query.poster}`, null, `https://kurikku.pw/u/${req.query.poster}`)
             .setTitle(`**New ${(req.query.bid) ? "beatmap" : "mapset" } has been ${req.query.type}d**`)
             .setColor(0x43a047)

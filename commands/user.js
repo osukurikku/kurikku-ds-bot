@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 
 module.exports = {
@@ -35,11 +35,11 @@ module.exports = {
         
         let user = await axios("https://kurikku.pw/api/get_user?u=" + username + "&m=" + mode);
         if (user.data.length<1) {
-            msg.channel.send(new RichEmbed().setColor(0xffebee).setDescription("User not found!"));
+            msg.channel.send(new MessageEmbed().setColor(0xffebee).setDescription("User not found!"));
             return;
         }
         user = user.data[0];
-        const resultEmbed = new RichEmbed()
+        const resultEmbed = new MessageEmbed()
             .setColor(0xe91e63)
             .setAuthor(user.username, `https://a.kurikku.pw/${user.user_id}`, `https://kurikku.pw/u/${user.user_id}`)
             .addField("Country", user.country, true)

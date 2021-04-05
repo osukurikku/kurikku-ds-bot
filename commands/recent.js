@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const utils = require('../utils');
 const secretUtils = require("../private/utils");
 
@@ -57,7 +57,7 @@ module.exports = {
                 topBeatIds.push(x.beatmap.beatmap_id);
             } 
 
-            let resultEmbed = new RichEmbed()
+            let resultEmbed = new MessageEmbed()
                 .setColor(0xec407a)
                 .setAuthor(username)
                 .setDescription(`[⯈ ${recent.beatmap.song_name}] +${utils.stringlifyMods(recent.mods)}](https://kurikku.pw/b/${recent.beatmap.beatmap_id})`)
